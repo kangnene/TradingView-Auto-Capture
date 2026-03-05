@@ -33,7 +33,7 @@ public class TradingViewAutoCapture {
             Files.createDirectories(Paths.get(baseDir));
 
             // 병렬 처리: 최대 5개 스레드
-            ExecutorService executor = Executors.newFixedThreadPool(5);
+            ExecutorService executor = Executors.newFixedThreadPool(8);
 
             for (String symbol : symbols) {
                 executor.submit(() -> {
@@ -48,11 +48,11 @@ public class TradingViewAutoCapture {
                         // 트레이딩뷰 1분봉 하루치 차트 접속
                         page.navigate(
                             "https://www.tradingview.com/chart/?symbol=" + targetSymbol + "&interval=1",
-                            new Page.NavigateOptions().setTimeout(120000)
+                            new Page.NavigateOptions().setTimeout(10000)
                         );
 
-                        page.waitForSelector(".chart-container",
-                            new Page.WaitForSelectorOptions().setTimeout(20000));
+                        page.waitForSelector(".chart-container canvas",
+                            new Page.WaitForSelectorOptions().setTimeout(10000));
 
                         // 팝업 제거
                         page.addStyleTag(new Page.AddStyleTagOptions()
