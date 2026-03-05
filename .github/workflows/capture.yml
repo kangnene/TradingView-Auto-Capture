@@ -1,4 +1,4 @@
-name: Nasdaq Chart Capture
+name: TradingView Chart Capture
 
 on:
   workflow_dispatch:
