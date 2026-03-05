@@ -29,10 +29,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Install dependencies for Playwright
+      - name: Install Playwright Browsers
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libnss3 libatk-bridge2.0-0 libxss1 libasound2 libgtk-3-0 libx11-xcb1 libxcomposite1 libxrandr2 libgbm1 libpango1.0-0 libatspi2.0-0 libcups2 libdrm2 libwayland-client0 libwayland-cursor0 fonts-liberation libappindicator3-1
           npm install -g playwright
           sudo npx playwright install-deps
           npx playwright install chromium
