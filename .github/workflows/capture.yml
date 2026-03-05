@@ -46,9 +46,7 @@ jobs:
       # 6️⃣ 캡처 실행
       - name: Run Capture
         run: |
-          # 환경변수 TODAY 설정 (날짜별 폴더용)
           export TODAY=$(date +%F)
-          # screenshots 폴더 및 오늘 날짜 폴더 생성
           mkdir -p screenshots/$TODAY
           mvn exec:java -Dexec.mainClass="TradingViewAutoCapture" -Dexec.args="${{ github.event.inputs.symbols }}"
 
@@ -57,7 +55,6 @@ jobs:
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          # 날짜별 폴더까지 포함하여 강제로 add
           git add -f screenshots/$TODAY/
           git commit -m "Daily screenshots $TODAY" || echo "No changes"
           git push
