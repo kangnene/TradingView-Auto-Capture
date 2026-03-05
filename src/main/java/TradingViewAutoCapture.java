@@ -27,14 +27,16 @@ public class TradingViewAutoCapture {
                     .setStorageStatePath(Paths.get("auth.json"))
             );
 
-            // screenshots 루트 폴더 생성
+            // ========================== 폴더 구조 수정 ==========================
+            // 1️⃣ 루트에 screenshots 폴더 생성
             Path screenshotsRoot = Paths.get("screenshots");
-            Files.createDirectories(screenshotsRoot);
+            Files.createDirectories(screenshotsRoot); // 이미 있어도 에러 안 남음
 
-            // 날짜 폴더 생성 (screenshots/YYYY-MM-DD)
+            // 2️⃣ 날짜 폴더 생성 (screenshots/YYYY-MM-DD)
             String today = LocalDate.now().toString();
             Path todayFolder = screenshotsRoot.resolve(today);
-            Files.createDirectories(todayFolder);
+            Files.createDirectories(todayFolder); // 날짜별 폴더 생성
+            // ===================================================================
 
             // 병렬 처리: 최대 8개 스레드
             ExecutorService executor = Executors.newFixedThreadPool(8);
@@ -44,6 +46,7 @@ public class TradingViewAutoCapture {
                 final String currentSymbol = symbol.trim().toUpperCase();
 
                 executor.submit(() -> {
+                    // 각 종목 스크린샷 경로
                     Path screenshotPath = todayFolder.resolve(currentSymbol.replace(":", "_") + ".png");
 
                     // ========================== Action 로그 강화 시작 ==========================
@@ -89,7 +92,7 @@ public class TradingViewAutoCapture {
 
                         System.out.println(currentSymbol + " 스크린샷 저장 중...");
                         if (Files.exists(screenshotPath)) {
-                            Files.delete(screenshotPath);
+                            Files.delete(screenshotPath); // 기존 파일 삭제 후 덮어쓰기
                         }
 
                         page.screenshot(new Page.ScreenshotOptions()
