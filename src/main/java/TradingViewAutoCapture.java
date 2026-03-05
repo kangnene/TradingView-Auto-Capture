@@ -40,17 +40,19 @@ public class TradingViewAutoCapture {
             ExecutorService executor = Executors.newFixedThreadPool(8);
 
             for (String symbol : symbols) {
-                executor.submit(() -> {
-                    String targetSymbol = symbol.trim().toUpperCase();
-                    Path screenshotPath = todayFolder.resolve(targetSymbol.replace(":", "_") + ".png");
+                // 람다 안에서 반드시 지역 변수로 복사
+                final String currentSymbol = symbol.trim().toUpperCase();
 
-                    System.out.println(targetSymbol + " 트레이딩뷰 접속 중...");
+                executor.submit(() -> {
+                    Path screenshotPath = todayFolder.resolve(currentSymbol.replace(":", "_") + ".png");
+
+                    System.out.println(currentSymbol + " 트레이딩뷰 접속 중...");
                     try {
                         Page page = context.newPage();
 
                         // 트레이딩뷰 1분봉 하루치 차트 접속
                         page.navigate(
-                            "https://www.tradingview.com/chart/?symbol=" + targetSymbol + "&interval=1",
+                            "https://www.tradingview.com/chart/?symbol=" + currentSymbol + "&interval=1",
                             new Page.NavigateOptions().setTimeout(120000)
                         );
 
@@ -98,12 +100,12 @@ public class TradingViewAutoCapture {
                         page.close();
 
                     } catch (Exception e) {
-                        System.out.println(targetSymbol + " 처리 중 오류 발생");
+                        System.out.println(currentSymbol + " 처리 중 오류 발생");
                         e.printStackTrace();
 
                         // 오류 로그 저장
                         try {
-                            Path errorPath = todayFolder.resolve(targetSymbol.replace(":", "_") + "_error.log");
+                            Path errorPath = todayFolder.resolve(currentSymbol.replace(":", "_") + "_error.log");
                             Files.write(errorPath, e.toString().getBytes());
                         } catch (Exception ex) {
                             System.out.println("오류 로그 저장 실패: " + ex.getMessage());
