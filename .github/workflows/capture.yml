@@ -33,7 +33,6 @@ jobs:
         run: |
           mvn install -DskipTests
           sudo npx playwright install-deps
-          # 자바 명령어로 크롬을 깔아야 버전 충돌이 없습니다.
           mvn exec:java -e -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install chromium"
 
       - name: Build Java Project
@@ -42,11 +41,10 @@ jobs:
       - name: Run Capture
         run: mvn exec:java -Dexec.mainClass="TradingViewAutoCapture" -Dexec.args="${{ github.event.inputs.symbols }}"
 
-      - name: Upload Screenshots
-        uses: actions/upload-artifact@v4
-        with:
-          # 종목 이름(${{ github.event.inputs.symbols }}) 대신 고정된 이름을 사용합니다.
-          # 콜론(:) 같은 특수문자 에러를 방지하기 위해서입니다.
-          name: TradingView-Capture-Result-${{ github.run_id }}
-          path: screenshots/
-          if-no-files-found: warn
+      - name: Commit and Push Screenshots
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add screenshots/
+          git commit -m "Daily screenshots $(date +%F)" || echo "No changes"
+          git push
