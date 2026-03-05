@@ -23,7 +23,7 @@ public class TradingViewAutoCapture {
             Files.createDirectories(Paths.get(baseDir));
 
             for (String symbol : symbols) {
-                String targetSymbol = symbol.trim();
+                String targetSymbol = symbol.trim().toUpperCase(); // .toUpperCase()를 붙이면 tsla라고 써도 TSLA로 바뀝니다.
                 String savePath = baseDir + "/" + targetSymbol.replace(":", "_") + ".jpg";
 
                 System.out.println(targetSymbol + " 트레이딩뷰 접속 중...");
