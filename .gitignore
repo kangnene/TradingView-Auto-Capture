@@ -15,3 +15,9 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# --- 우리 프로젝트 전용 추가 항목 ---
+auth.json
+screenshots/
+.idea/
+*.iml
