@@ -43,9 +43,10 @@ jobs:
         run: mvn exec:java -Dexec.mainClass="TradingViewAutoCapture" -Dexec.args="${{ github.event.inputs.symbols }}"
 
       - name: Upload Screenshots
-        uses: actions/upload-artifact@v4
-        with:
-          # 콜론(:)을 언더스코어(_)로 변환
-          name: TradingView-Charts-${{ github.event.inputs.symbols//:/_ }}-${{ github.run_id }}
-          path: screenshots/
-          if-no-files-found: warn
+              uses: actions/upload-artifact@v4
+              with:
+                # 종목 이름(${{ github.event.inputs.symbols }}) 대신 고정된 이름을 사용합니다.
+                # 콜론(:) 같은 특수문자 에러를 방지하기 위해서입니다.
+                name: TradingView-Capture-Result-${{ github.run_id }}
+                path: screenshots/
+                if-no-files-found: warn
