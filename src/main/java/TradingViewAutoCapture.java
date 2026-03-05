@@ -49,8 +49,8 @@ public class TradingViewAutoCapture {
                         page.keyboard().press("Escape");
                         page.waitForTimeout(1000);
 
-                        // '1일' 범위(1D) 클릭 시도
                         try {
+                            // 1. "1분" 버튼 클릭 시도
                             Locator btn1m = page.locator("button[data-value='1'], [data-name='1']").first();
                             if (btn1m.isVisible()) {
                                 btn1m.click(new Locator.ClickOptions().setForce(true));
@@ -59,6 +59,7 @@ public class TradingViewAutoCapture {
                                         .click(new Locator.ClickOptions().setForce(true));
                             }
                         } catch (Exception e) {
+                            // 2. 실패하면 키보드 단축키(Control+Down)로 범위 조정
                             for (int i = 0; i < 10; i++) {
                                 page.keyboard().press("Control+ArrowDown");
                                 page.waitForTimeout(200);
