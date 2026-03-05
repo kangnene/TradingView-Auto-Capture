@@ -40,6 +40,7 @@ public class TradingViewAutoCapture {
             ExecutorService executor = Executors.newFixedThreadPool(8);
 
             for (String symbol : symbols) {
+                // 람다 안에서 반드시 지역 변수로 복사
                 final String currentSymbol = symbol.trim().toUpperCase();
 
                 executor.submit(() -> {
