@@ -31,9 +31,10 @@ jobs:
 
       - name: Install Playwright Browsers
         run: |
-          npm install -g playwright
+          mvn install -DskipTests
           sudo npx playwright install-deps
-          npx playwright install chromium
+          # 자바 명령어로 크롬을 깔아야 버전 충돌이 없습니다.
+          mvn exec:java -e -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install chromium"
 
       - name: Build Java Project
         run: mvn install -DskipTests
@@ -44,6 +45,7 @@ jobs:
       - name: Upload Screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: TradingView-Charts-${{ github.event.inputs.symbols }}-${{ github.run_id }}
+          # 콜론(:)을 언더스코어(_)로 변환
+          name: TradingView-Charts-${{ github.event.inputs.symbols//:/_ }}-${{ github.run_id }}
           path: screenshots/
           if-no-files-found: warn
