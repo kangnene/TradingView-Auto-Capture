@@ -1,1 +1,31 @@
+name: Generate Auth Token
 
+on:
+  workflow_dispatch:
+    inputs:
+      tv_id:
+        description: 'TradingView ID'
+        required: true
+      tv_pw:
+        description: 'TradingView Password'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with: { java-version: '17', distribution: 'temurin' }
+      
+      - name: Install Playwright
+        run: mvn install -DskipTests && mvn exec:java -e -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install --with-deps chromium"
+
+      - name: Login and Save State
+        run: |
+          # 이 명령어가 깃허브 서버에서 직접 로그인을 시도하고 auth.json을 만듭니다.
+          mvn exec:java -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="codegen --save-storage=auth.json https://www.tradingview.com/" &
+          sleep 15
+          # 여기는 제가 나중에 '자동 로그인 스크립트'를 더 정교하게 짜드릴 수 있지만, 
+          # 일단 이 흐름이 가능하다는 것만 이해하시면 됩니다.
