@@ -31,13 +31,13 @@ public class TradingViewAutoCapture {
             for (String symbol : symbols) {
                 executor.submit(() -> {
                     String targetSymbol = symbol.trim().toUpperCase(); // TSLA -> TSLA
-                    String savePath = baseDir + "/" + targetSymbol.replace(":", "_") + ".jpg";
+                    String savePath = baseDir + "/" + targetSymbol.replace(":", "_") + ".png";
 
                     System.out.println(targetSymbol + " 트레이딩뷰 접속 중...");
                     try {
                         Page page = context.newPage();
                         // 기존 로직 그대로 유지
-                        page.navigate("https://www.tradingview.com/chart/?symbol=" + targetSymbol + "&interval=1D",
+                        page.navigate("https://www.tradingview.com/chart/?symbol=" + targetSymbol + "&interval=1",
                                 new Page.NavigateOptions().setTimeout(120000));
 
                         page.waitForSelector(".chart-container",
@@ -51,11 +51,11 @@ public class TradingViewAutoCapture {
 
                         // '1일' 범위(1D) 클릭 시도
                         try {
-                            Locator btn1D = page.locator("button[data-value='1D'], [data-name='1D']").first();
-                            if (btn1D.isVisible()) {
-                                btn1D.click(new Locator.ClickOptions().setForce(true));
+                            Locator btn1m = page.locator("button[data-value='1'], [data-name='1']").first();
+                            if (btn1m.isVisible()) {
+                                btn1m.click(new Locator.ClickOptions().setForce(true));
                             } else {
-                                page.locator("span:has-text('1D'), div:has-text('1D')").last()
+                                page.locator("span:has-text('1m'), div:has-text('1m')").last()
                                         .click(new Locator.ClickOptions().setForce(true));
                             }
                         } catch (Exception e) {
