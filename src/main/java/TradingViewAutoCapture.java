@@ -40,32 +40,33 @@ public class TradingViewAutoCapture {
             ExecutorService executor = Executors.newFixedThreadPool(8);
 
             for (String symbol : symbols) {
-                // 람다 안에서 반드시 지역 변수로 복사
                 final String currentSymbol = symbol.trim().toUpperCase();
 
                 executor.submit(() -> {
                     Path screenshotPath = todayFolder.resolve(currentSymbol.replace(":", "_") + ".png");
 
-                    System.out.println(currentSymbol + " 트레이딩뷰 접속 중...");
+                    // ========================== Action 로그 강화 시작 ==========================
+                    System.out.println("=== Capturing: " + currentSymbol + " ===");
+
                     try {
                         Page page = context.newPage();
 
-                        // 트레이딩뷰 1분봉 하루치 차트 접속
+                        System.out.println(currentSymbol + " 페이지 접속 중...");
                         page.navigate(
                             "https://www.tradingview.com/chart/?symbol=" + currentSymbol + "&interval=1",
-                            new Page.NavigateOptions().setTimeout(120000)
+                            new Page.NavigateOptions().setTimeout(180000)
                         );
 
-                        page.waitForSelector(".chart-container canvas",
-                            new Page.WaitForSelectorOptions().setTimeout(20000));
+                        System.out.println(currentSymbol + " 차트 로딩 대기...");
+                        page.waitForSelector(".chart-container canvas", new Page.WaitForSelectorOptions().setTimeout(20000));
 
-                        // 팝업 제거
+                        System.out.println(currentSymbol + " 팝업 제거 중...");
                         page.addStyleTag(new Page.AddStyleTagOptions()
                             .setContent(".tv-dialog__close, .js-dialog__close, div[class*='overlap-manager'], [class*='dialog'], [class*='overlay'] { display: none !important; }"));
                         page.keyboard().press("Escape");
                         page.waitForTimeout(1000);
 
-                        // '1일' 범위(1D) 클릭 시도
+                        System.out.println(currentSymbol + " 1D 버튼 클릭 시도...");
                         try {
                             Locator btn1D = page.locator("button[data-value='1D'], [data-name='1D']").first();
                             if (btn1D.isVisible()) {
@@ -75,7 +76,7 @@ public class TradingViewAutoCapture {
                                     .click(new Locator.ClickOptions().setForce(true));
                             }
                         } catch (Exception e) {
-                            // 키보드 단축키(Control+Down)로 범위 조정
+                            System.out.println(currentSymbol + " 1D 버튼 클릭 실패, 키보드 단축키 시도...");
                             for (int i = 0; i < 10; i++) {
                                 page.keyboard().press("Control+ArrowDown");
                                 page.waitForTimeout(200);
@@ -85,7 +86,7 @@ public class TradingViewAutoCapture {
                         page.waitForTimeout(5000);
                         page.mouse().move(0, 0);
 
-                        // 기존 파일 삭제 후 스크린샷 저장 (덮어쓰기)
+                        System.out.println(currentSymbol + " 스크린샷 저장 중...");
                         if (Files.exists(screenshotPath)) {
                             Files.delete(screenshotPath);
                         }
@@ -96,21 +97,21 @@ public class TradingViewAutoCapture {
                             .setFullPage(false)
                         );
 
-                        System.out.println("캡쳐 완료: " + screenshotPath.toString());
+                        System.out.println(currentSymbol + " 캡처 완료 ✅ " + screenshotPath.toString());
                         page.close();
 
                     } catch (Exception e) {
-                        System.out.println(currentSymbol + " 처리 중 오류 발생");
-                        e.printStackTrace();
+                        System.out.println(currentSymbol + " 처리 중 오류 ❌");
+                        e.printStackTrace();  // GitHub Actions 로그에 전체 스택 출력
 
-                        // 오류 로그 저장
                         try {
                             Path errorPath = todayFolder.resolve(currentSymbol.replace(":", "_") + "_error.log");
                             Files.write(errorPath, e.toString().getBytes());
                         } catch (Exception ex) {
-                            System.out.println("오류 로그 저장 실패: " + ex.getMessage());
+                            System.out.println(currentSymbol + " 오류 로그 저장 실패: " + ex.getMessage());
                         }
                     }
+                    // ========================== Action 로그 강화 끝 ==========================
                 });
             }
 
