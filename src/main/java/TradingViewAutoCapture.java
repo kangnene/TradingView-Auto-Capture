@@ -17,7 +17,8 @@ public class TradingViewAutoCapture {
             Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
             // auth.json으로 로그인 세션 유지
             BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-                    .setStorageStatePath(Paths.get("auth.json")));
+                .setDeviceScaleFactor(1.5)  // 1.5배 고해상도
+                .setStorageStatePath(Paths.get("auth.json")));
 
             // 날짜 폴더 생성
             String today = LocalDate.now().toString();
@@ -36,7 +37,7 @@ public class TradingViewAutoCapture {
                     try {
                         Page page = context.newPage();
                         // 기존 로직 그대로 유지
-                        page.navigate("https://www.tradingview.com/chart/?symbol=" + targetSymbol + "&interval=1",
+                        page.navigate("https://www.tradingview.com/chart/?symbol=" + targetSymbol + "&interval=1D",
                                 new Page.NavigateOptions().setTimeout(120000));
 
                         page.waitForSelector(".chart-container",
@@ -69,9 +70,9 @@ public class TradingViewAutoCapture {
 
                         // 스크린샷 저장
                         page.screenshot(new Page.ScreenshotOptions()
-                                .setPath(Paths.get(savePath))
-                                .setType(ScreenshotType.JPEG)
-                                .setQuality(100));
+                            .setPath(Paths.get(savePath))
+                            .setType(ScreenshotType.PNG)
+                            .setFullPage(false));  // 필요시 false 유지
 
                         System.out.println("캡쳐 완료: " + savePath);
                         page.close();
