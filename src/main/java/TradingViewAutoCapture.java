@@ -60,16 +60,20 @@ public class TradingViewAutoCapture {
                         page.keyboard().press("Escape");
                         page.waitForTimeout(1000);
 
-                        // 1분봉 선택 (1분 버튼 클릭, 실패 시 키보드 fallback)
+                        // '1일' 범위(1D) 클릭 시도 (사용자님의 3단계 방어막 유지)
                         try {
-                            Locator btn1m = page.locator("button[data-value='1'], [data-name='1']").first();
-                            if (btn1m.isVisible()) {
-                                btn1m.click(new Locator.ClickOptions().setForce(true));
+                            // 1. "1D"라는 속성값을 가진 버튼을 찾습니다.
+                            Locator btn1D = page.locator("button[data-value='1D'], [data-name='1D']").first();
+                            
+                            if (btn1D.isVisible()) {
+                                // 2. 버튼이 보이면 클릭합니다.
+                                btn1D.click(new Locator.ClickOptions().setForce(true));
                             } else {
-                                page.locator("span:has-text('1m'), div:has-text('1m')").last()
-                                    .click(new Locator.ClickOptions().setForce(true));
+                                // 3. 버튼이 안 보이면 "1D"라는 텍스트가 써진 요소를 찾아 클릭합니다.
+                                page.locator("span:has-text('1D'), div:has-text('1D')").last().click(new Locator.ClickOptions().setForce(true));
                             }
                         } catch (Exception e) {
+                            // 4. 위 방법이 다 실패하면 키보드 단축키(Control+Down)로 차트 범위를 조절합니다.
                             for (int i = 0; i < 10; i++) {
                                 page.keyboard().press("Control+ArrowDown");
                                 page.waitForTimeout(200);
