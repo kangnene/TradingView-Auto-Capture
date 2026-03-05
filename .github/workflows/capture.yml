@@ -31,7 +31,7 @@ jobs:
         run: mvn exec:java -e -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install --with-deps chromium"
 
       - name: Run Capture
-        run: mvn exec:java -Dexec.mainClass="NasdaqCapture" -Dexec.args="${{ github.event.inputs.symbols }}"
+        run: mvn exec:java -Dexec.mainClass="TradingViewAutoCapture" -Dexec.args="${{ github.event.inputs.symbols }}"
 
       - name: Upload Screenshots
         uses: actions/upload-artifact@v4
