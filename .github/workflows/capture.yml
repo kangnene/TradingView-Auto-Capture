@@ -31,6 +31,8 @@ jobs:
       - name: Install Playwright Browsers
         run: |
           mvn install -DskipTests
+          # 아래 명령어가 핵심입니다: 시스템에 필요한 모든 라이브러리를 강제로 설치합니다.
+          sudo npx playwright install-deps
           mvn exec:java -e -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install --with-deps chromium"
 
       - name: Run Capture
