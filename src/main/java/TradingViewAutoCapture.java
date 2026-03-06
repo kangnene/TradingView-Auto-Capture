@@ -9,9 +9,6 @@ public class TradingViewAutoCapture {
     public static void main(String[] args) {
         // 입력받은 심볼이 없으면 나스닥 기본값
         String inputSymbols = (args.length > 0) ? args[0] : "NASDAQ:NDX";
-        
-        inputSymbols = inputSymbols.replaceAll("\\s+", "");
-        
         String[] symbols = inputSymbols.split(",");
 
         try (Playwright playwright = Playwright.create()) {
@@ -64,7 +61,6 @@ public class TradingViewAutoCapture {
                     
                     System.out.println(currentSymbol + " 차트 스케일 리셋 (Alt+R)...");
                     page.keyboard().press("Alt+R");
-                    page.waitForTimeout(2000);
 
                     System.out.println(currentSymbol + " 1D 버튼 클릭 시도...");
                     try {
