@@ -19,7 +19,7 @@ public class TradingViewAutoCapture {
             BrowserContext context = browser.newContext(
                 new Browser.NewContextOptions()
                     .setDeviceScaleFactor(1.0)
-                    .setViewportSize(1920, 1080)
+                    .setViewportSize(2560, 1440)
                     .setStorageStatePath(Paths.get("auth.json"))
             );
 
@@ -75,6 +75,10 @@ public class TradingViewAutoCapture {
 
                     page.waitForTimeout(5000);
                     page.mouse().move(0, 0);
+
+                    System.out.println(currentSymbol + " 차트 스케일 리셋 (Alt+R)...");
+                    page.keyboard().press("Alt+R");
+                    page.waitForTimeout(2000);
 
                     System.out.println(currentSymbol + " 스크린샷 저장 중...");
                     if (Files.exists(screenshotPath)) {
