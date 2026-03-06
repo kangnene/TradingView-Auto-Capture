@@ -61,6 +61,10 @@ public class TradingViewAutoCapture {
                     
                     System.out.println(currentSymbol + " 차트 스케일 리셋 (Alt+R)...");
                     page.keyboard().press("Alt+R");
+                    page.waitForTimeout(2000);
+                    
+                    // ⭐ toolbar 다시 로딩 대기
+                    page.waitForSelector("button[data-value='1D'], [data-name='1D']");
 
                     System.out.println(currentSymbol + " 1D 버튼 클릭 시도...");
                     try {
