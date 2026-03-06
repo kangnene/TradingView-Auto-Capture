@@ -9,6 +9,9 @@ public class TradingViewAutoCapture {
     public static void main(String[] args) {
         // 입력받은 심볼이 없으면 나스닥 기본값
         String inputSymbols = (args.length > 0) ? args[0] : "NASDAQ:NDX";
+        
+        inputSymbols = inputSymbols.replaceAll("\\s+", "");
+        
         String[] symbols = inputSymbols.split(",");
 
         try (Playwright playwright = Playwright.create()) {
@@ -56,6 +59,13 @@ public class TradingViewAutoCapture {
                     page.keyboard().press("Escape");
                     page.waitForTimeout(1000);
 
+                    // ⭐ 포커스
+                    page.click("body");
+                    
+                    System.out.println(currentSymbol + " 차트 스케일 리셋 (Alt+R)...");
+                    page.keyboard().press("Alt+R");
+                    page.waitForTimeout(2000);
+
                     System.out.println(currentSymbol + " 1D 버튼 클릭 시도...");
                     try {
                         Locator btn1D = page.locator("button[data-value='1D'], [data-name='1D']").first();
@@ -75,10 +85,6 @@ public class TradingViewAutoCapture {
 
                     page.waitForTimeout(5000);
                     page.mouse().move(0, 0);
-
-                    System.out.println(currentSymbol + " 차트 스케일 리셋 (Alt+R)...");
-                    page.keyboard().press("Alt+R");
-                    page.waitForTimeout(2000);
 
                     System.out.println(currentSymbol + " 스크린샷 저장 중...");
                     if (Files.exists(screenshotPath)) {
