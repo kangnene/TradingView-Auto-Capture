@@ -9,7 +9,7 @@ public class TradingViewAutoCapture {
     public static void main(String[] args) {
         // 입력받은 심볼이 없으면 나스닥 기본값
         String inputSymbols = (args.length > 0) ? args[0] : "NASDAQ:NDX";
-        String[] symbols = inputSymbols.split("\\s*,\\s*");
+        String[] symbols = inputSymbols.split(",");
 
         try (Playwright playwright = Playwright.create()) {
             Browser browser = playwright.chromium().launch(
