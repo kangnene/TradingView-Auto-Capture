@@ -55,10 +55,10 @@ public class TradingViewAutoCapture {
                         .setContent(".tv-dialog__close, .js-dialog__close, div[class*='overlap-manager'], [class*='dialog'], [class*='overlay'] { display: none !important; }"));
                     page.keyboard().press("Escape");
 
-                    page.waitForTimeout(2000);
+                    page.waitForTimeout(1000);
                     page.keyboard().press("Alt+R");
                     
-                    page.waitForTimeout(1000);
+                    page.waitForTimeout(2000);
 
                     System.out.println(currentSymbol + " 1D 버튼 클릭 시도...");
                     try {
