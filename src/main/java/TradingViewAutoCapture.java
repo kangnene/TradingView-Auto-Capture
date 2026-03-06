@@ -74,12 +74,7 @@ public class TradingViewAutoCapture {
                     }
                     
                     page.waitForTimeout(2000);
-                    
-                    // ⭐ 차트 캔버스 포커스
-                    page.locator(".chart-container canvas").first().click();
-                    
-                    // 스케일 리셋
-                    System.out.println(currentSymbol + " 차트 스케일 리셋 (Alt+R)...");
+
                     page.keyboard().press("Alt+R");
 
                     page.waitForTimeout(3000);
