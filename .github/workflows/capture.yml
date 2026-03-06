@@ -7,12 +7,6 @@ on:
         description: '캡처할 종목 (예: NASDAQ:NDX, TSLA, AAPL)'
         required: true
         default: 'NASDAQ:NDX'
-      startDate:
-        description: '시작 날짜 (YYYY-MM-DD)'
-        required: true
-      endDate:
-        description: '종료 날짜 (YYYY-MM-DD)'
-        required: true
 
 jobs:
   capture-job:
@@ -20,14 +14,17 @@ jobs:
     permissions:
       contents: write
     steps:
+      # 1️⃣ 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ 로그인 정보(auth.json) 생성
       - name: Create auth.json from Secrets
         run: |
           echo '${{ secrets.TRADINGVIEW_AUTH }}' > auth.json
           ls -l auth.json
 
+      # 3️⃣ JDK 17 세팅
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -35,21 +32,25 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      # 4️⃣ Playwright 브라우저 설치
       - name: Install Playwright Browsers
         run: |
           mvn install -DskipTests
           sudo npx playwright install-deps
           mvn exec:java -e -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install chromium"
 
+      # 5️⃣ 프로젝트 빌드
       - name: Build Java Project
         run: mvn install -DskipTests
 
+      # 6️⃣ 캡처 실행
       - name: Run Capture
         run: |
           export TODAY=$(date +%F)
           mkdir -p screenshots/$TODAY
-          mvn exec:java -Dexec.mainClass="TradingViewAutoCapture" -Dexec.args="${{ github.event.inputs.symbols }} ${{ github.event.inputs.startDate }} ${{ github.event.inputs.endDate }}"
+          mvn exec:java -Dexec.mainClass="TradingViewAutoCapture" -Dexec.args="${{ github.event.inputs.symbols }}"
 
+      # 7️⃣ 스크린샷 커밋 및 푸시
       - name: Commit and Push Screenshots
         run: |
           git config --global user.name "GitHub Action"
