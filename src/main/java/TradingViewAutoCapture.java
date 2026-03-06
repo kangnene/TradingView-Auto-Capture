@@ -62,12 +62,18 @@ public class TradingViewAutoCapture {
 
                     System.out.println(currentSymbol + " 1D 버튼 클릭 시도...");
                     try {
-                        Locator btn1D = page.locator("button[data-value='1D'], [data-name='1D']").first();
-                        if (btn1D.isVisible()) {
-                            btn1D.click(new Locator.ClickOptions().setForce(true));
+                        // TradingView 하단 범위 섹터의 1D 버튼 전용 셀렉터
+                        // 주로 '범위'를 뜻하는 'time-range' 관련 속성을 가집니다.
+                        Locator bottom1D = page.locator("div[id='footer-chart-panel'] button:has-text('1D'), [data-name='time-range-day']").last();
+                    
+                        if (bottom1D.isVisible()) {
+                            bottom1D.click(new Locator.ClickOptions().setForce(true));
+                            System.out.println("하단 1D 버튼 클릭 성공");
                         } else {
-                            page.locator("span:has-text('1D'), div:has-text('1D')").last()
-                                .click(new Locator.ClickOptions().setForce(true));
+                            // 버튼이 안 보일 경우를 대비한 보험: 키보드 단축키
+                            // 하단 1D 버튼과 동일한 효과를 내는 단축키는 없으므로, 
+                            // 화면에 '1D'라는 텍스트를 가진 모든 버튼 중 가장 하단에 있는 것을 클릭합니다.
+                            page.locator("button:has-text('1D')").last().click(new Locator.ClickOptions().setForce(true));
                         }
                     } catch (Exception e) {
                         System.out.println(currentSymbol + " 1D 버튼 클릭 실패, 키보드 단축키 시도...");
