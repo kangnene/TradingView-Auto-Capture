@@ -18,7 +18,7 @@ public class TradingViewAutoCapture {
 
             BrowserContext context = browser.newContext(
                 new Browser.NewContextOptions()
-                    .setDeviceScaleFactor(1.0)
+                    .setDeviceScaleFactor(2.0)
                     .setViewportSize(2560, 1440)
                     .setStorageStatePath(Paths.get("auth.json"))
             );
